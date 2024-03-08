@@ -104,22 +104,24 @@ def main():
     # 1. Bag of Words
     print("\n\nLog: Extracting Bag of Words")
     X_train, y_train, X_valid, y_valid, X_test, y_test = extract_cbow(train_data, valid_data, test_data)
-    Models.fit_logistic_regression(X_train, y_train, X_valid, y_valid, X_test, y_test)
-    Models.fit_decision_tree(X_train, y_train, X_valid, y_valid, X_test, y_test)
-    Models.fit_random_forest(X_train, y_train, X_valid, y_valid, X_test, y_test)
-    Models.fit_svm(X_train, y_train, X_valid, y_valid, X_test, y_test)
-    Models.fit_knn(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    # Models.fit_logistic_regression(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    # Models.fit_decision_tree(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    # Models.fit_random_forest(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    # Models.fit_svm(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    # Models.fit_knn(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    Models.fit_gaussian_nb(X_train, y_train, X_valid, y_valid, X_test, y_test)
     print("\n\nLog: Bag of Words Extraction Complete\n\n")
     
     
     # 2. TF-IDF
     print("\n\nLog: Extracting TF-IDF")
     X_train, y_train, X_valid, y_valid, X_test, y_test = extract_tfidf(train_data, valid_data, test_data)
-    Models.fit_logistic_regression(X_train, y_train, X_valid, y_valid, X_test, y_test)
-    Models.fit_decision_tree(X_train, y_train, X_valid, y_valid, X_test, y_test)
-    Models.fit_random_forest(X_train, y_train, X_valid, y_valid, X_test, y_test)
-    Models.fit_svm(X_train, y_train, X_valid, y_valid, X_test, y_test)
-    Models.fit_knn(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    # Models.fit_logistic_regression(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    # Models.fit_decision_tree(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    # Models.fit_random_forest(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    # Models.fit_svm(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    # Models.fit_knn(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    Models.fit_gaussian_nb(X_train, y_train, X_valid, y_valid, X_test, y_test)
     print("\n\nLog: TF-IDF Extraction Complete\n\n")
     
    
