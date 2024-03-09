@@ -193,7 +193,7 @@ def liar_multi_class():
     
     model, metrics = Models.fit_gaussian_nb(X_train, y_train, X_valid, y_valid, X_test, y_test)
     metrics_data.append(["Gaussian NB", "Bag of Words"] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Gaussian NB", CBOW_FIGURES+"gaussian_nb")
+    create_confusion_matrix(model, X_train.toarray(), y_train, X_valid.toarray(), y_valid, X_test.toarray(), y_test, "Gaussian NB", CBOW_FIGURES+"gaussian_nb")
     
     model, metrics = Models.fit_adaboost(X_train, y_train, X_valid, y_valid, X_test, y_test)
     metrics_data.append(["AdaBoost", "Bag of Words"] + metrics)
@@ -242,7 +242,7 @@ def liar_multi_class():
     
     model, metrics = Models.fit_gaussian_nb(X_train, y_train, X_valid, y_valid, X_test, y_test)
     metrics_data.append(["Gaussian NB", "TF-IDF"] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Gaussian NB", TFIDF_FIGURES+"gaussian_nb")
+    create_confusion_matrix(model, X_train.toarray(), y_train, X_valid.toarray(), y_valid, X_test.toarray(), y_test, "Gaussian NB", TFIDF_FIGURES+"gaussian_nb")
     
     model, metrics = Models.fit_adaboost(X_train, y_train, X_valid, y_valid, X_test, y_test)
     metrics_data.append(["AdaBoost", "TF-IDF"] + metrics)

@@ -198,7 +198,8 @@ def fit_svm(X_train, y_train, X_valid=None, y_valid=None, X_test=None, y_test=No
     print("Log: Fitting SVM Model")
     train_time = time.time()
     model = fit_svm_classifier(
-        X_train, y_train, 
+        X_train, y_train,
+        probability=True,
         C=1.0, 
         kernel='rbf', 
         degree=3,  # HYPERPARAMETER
