@@ -61,11 +61,11 @@ def word_clouds_for_liar_data(data, save_name="liar_data"):
     draw_wordcloud(consolidated, save_name+"_pants-fire")
 
 
-def create_confusion_matrix(confusion_matrix, labels, title:str=None, filename:str=None):
+def create_confusion_matrix(confusion_matrix, labels, title:str=None, save_file:str=None):
     cm_display = metrics.ConfusionMatrixDisplay(
         confusion_matrix=confusion_matrix, 
-        display_labels=labels
-        ) 
+        display_labels=labels,
+        )
   
     fig, ax = plt.subplots(figsize=(10, 8))  # Adjust the figure size
     cm_display.plot(ax=ax, cmap='Blues', xticks_rotation=45)  # Choose color map and rotate xticks
@@ -79,11 +79,15 @@ def create_confusion_matrix(confusion_matrix, labels, title:str=None, filename:s
     # Add grid lines for better readability
     plt.grid(False)
     
-    if filename:
-        plt.savefig(
-            FIG_DIR+filename+"_confusion_matrix.pdf", 
-            bbox_inches='tight', 
-            pad_inches=0
-            )
+    if save_file:
+        save_file = save_file
+    else:
+        save_file = FIG_DIR+"confusion_matrix.pdf"    
+
+    plt.savefig(
+        save_file, 
+        bbox_inches='tight', 
+        pad_inches=0
+        )
     plt.close()
 
