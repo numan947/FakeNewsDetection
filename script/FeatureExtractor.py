@@ -15,7 +15,7 @@ def get_bag_of_words(text_data, max_features=1000):
 ## for transforming test data, use the transform method
 ## of the vectorizer object returned by this function
 def get_tfidf(text_data, max_features=1000):
-	vectorizer = TfidfVectorizer(max_features=max_features)
+	vectorizer = TfidfVectorizer(max_features=max_features, )
 	tfidf = vectorizer.fit_transform(text_data)
 	return tfidf, vectorizer
 

@@ -1,7 +1,9 @@
 import os
 import sys
-sys.path.append('./')
 
+from analysis import *
+sys.path.append('./')
+from tqdm import tqdm 
 import pandas as pd
 import numpy as np
 import DataSetReader
@@ -13,7 +15,19 @@ from sklearn.metrics import confusion_matrix
 
 ##INFO: Primary columns: statement, stmt, label | stmt is the preprocessed statement
 
-CUSTOM_STOP_WORDS = ["said", "say", "says", "tell", "tells", "told", "ask", "asks", "asked"]
+CUSTOM_STOP_WORDS = [ "a", "about", "above", "after", "again", "against", "all", "am", "an", "and", "any", "are", "as", "at", "be", "because", 
+             "been", "before", "being", "below", "between", "both", "but", "by", "could", "did", "do", "does", "doing", "down", "during",
+             "each", "few", "for", "from", "further", "had", "has", "have", "having", "he", "he'd", "he'll", "he's", "her", "here", 
+             "here's", "hers", "herself", "him", "himself", "his", "how", "how's", "i", "i'd", "i'll", "i'm", "i've", "if", "in", "into",
+             "is", "it", "it's", "its", "itself", "let's", "me", "more", "most", "my", "myself", "nor", "of", "on", "once", "only", "or",
+             "other", "ought", "our", "ours", "ourselves", "out", "over", "own", "same", "she", "she'd", "she'll", "she's", "should", 
+             "so", "some", "such", "than", "that", "that's", "the", "their", "theirs", "them", "themselves", "then", "there", "there's",
+             "these", "they", "they'd", "they'll", "they're", "they've", "this", "those", "through", "to", "too", "under", "until", "up",
+             "very", "was", "we", "we'd", "we'll", "we're", "we've", "were", "what", "what's", "when", "when's", "where", "where's",
+             "which", "while", "who", "who's", "whom", "why", "why's", "with", "would", "you", "you'd", "you'll", "you're", "you've",
+             "your", "yours", "yourself", "yourselves" ]
+             
+             
 y_str = ['barely-true', 'false', 'half-true', 'mostly-true', 'pants-fire', 'true']
 # Map the string labels to numerical values
 class_mapping = {
@@ -125,6 +139,7 @@ def create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y
     )
 
 
+
 def liar_multi_class():
     # read the data
     print("Log: Reading Liar Data")
@@ -133,6 +148,7 @@ def liar_multi_class():
     # preprocess the data
     print("Log: Preprocessing Liar Data")
     train_data, valid_data, test_data = preprocess_data(train_data, valid_data, test_data)
+
     
     # visualize the data
     # visualize_data(train_data, valid_data, test_data)
@@ -160,112 +176,28 @@ def liar_multi_class():
     )
     
     metrics_data = []
+    # do_cbow(train_data, valid_data, test_data, metrics_data)
+    # do_tfidf(train_data, valid_data, test_data, metrics_data)
+    # do_glove_6b(train_data, valid_data, test_data, metrics_data, embedding_name="glove.6B.300d", agg='mean')
+    # do_glove_6b(train_data, valid_data, test_data, metrics_data, embedding_name="glove.6B.300d", agg='max')
+    # do_glove_6b(train_data, valid_data, test_data, metrics_data, embedding_name="glove.6B.300d", agg='sum')
+    
+    # do_glove_6b(train_data, valid_data, test_data, metrics_data, embedding_name="glove.twitter.27B.200d", agg='mean')
+    # do_glove_6b(train_data, valid_data, test_data, metrics_data, embedding_name="glove.twitter.27B.200d", agg='max')
+    # do_glove_6b(train_data, valid_data, test_data, metrics_data, embedding_name="glove.twitter.27B.200d", agg='sum')
+    
+    # do_glove_6b(train_data, valid_data, test_data, metrics_data, embedding_name="glove.840B.300d", agg='mean')
+    # do_glove_6b(train_data, valid_data, test_data, metrics_data, embedding_name="glove.840B.300d", agg='max')
+    # do_glove_6b(train_data, valid_data, test_data, metrics_data, embedding_name="glove.840B.300d", agg='sum')
     
     
-    # 1. Bag of Words
-    print("\n\nLog: Extracting Bag of Words")
-    CBOW_FIGURES = "../generated/figures/liar_data/cbow/"
-    if os.path.exists(CBOW_FIGURES) == False:
-        os.makedirs(CBOW_FIGURES)
-        
-    X_train, y_train, X_valid, y_valid, X_test, y_test = extract_cbow(train_data, valid_data, test_data)
-
-
-    model, metrics = Models.fit_logistic_regression(X_train, y_train, X_valid, y_valid, X_test, y_test)
-    metrics_data.append(["Logistic Regression", "Bag of Words"] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Logistic Regression", CBOW_FIGURES+"logistic_regression")
-    
-    model, metrics = Models.fit_decision_tree(X_train, y_train, X_valid, y_valid, X_test, y_test)
-    metrics_data.append(["Decision Tree", "Bag of Words"] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Decision Tree", CBOW_FIGURES+"decision_tree")
-    
-    model, metrics = Models.fit_random_forest(X_train, y_train, X_valid, y_valid, X_test, y_test)
-    metrics_data.append(["Random Forest", "Bag of Words"] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Random Forest", CBOW_FIGURES+"random_forest")
-    
-    model, metrics = Models.fit_svm(X_train, y_train, X_valid, y_valid, X_test, y_test)
-    metrics_data.append(["SVM", "Bag of Words"] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "SVM", CBOW_FIGURES+"svm")
-    
-    model, metrics = Models.fit_knn(X_train, y_train, X_valid, y_valid, X_test, y_test)
-    metrics_data.append(["KNN", "Bag of Words"] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "KNN", CBOW_FIGURES+"knn")
-    
-    model, metrics = Models.fit_gaussian_nb(X_train, y_train, X_valid, y_valid, X_test, y_test)
-    metrics_data.append(["Gaussian NB", "Bag of Words"] + metrics)
-    create_confusion_matrix(model, X_train.toarray(), y_train, X_valid.toarray(), y_valid, X_test.toarray(), y_test, "Gaussian NB", CBOW_FIGURES+"gaussian_nb")
-    
-    model, metrics = Models.fit_adaboost(X_train, y_train, X_valid, y_valid, X_test, y_test)
-    metrics_data.append(["AdaBoost", "Bag of Words"] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "AdaBoost", CBOW_FIGURES+"adaboost")
-    
-    model, metrics = Models.fit_extra_trees(X_train, y_train, X_valid, y_valid, X_test, y_test)
-    metrics_data.append(["Extra Trees", "Bag of Words"] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Extra Trees", CBOW_FIGURES+"extra_trees")
-    
-    model, metrics = Models.fit_xgboost(X_train, y_train, X_valid, y_valid, X_test, y_test, class_mapping=class_mapping)
-    metrics_data.append(["XGBoost", "Bag of Words"] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "XGBoost", CBOW_FIGURES+"xgboost", class_mapping=class_mapping)
-    
-    
-    print("\n\nLog: Bag of Words Extraction Complete\n\n")
-    
-    
-    # 2. TF-IDF
-    print("\n\nLog: Extracting TF-IDF")
-    TFIDF_FIGURES = "../generated/figures/liar_data/tfidf/"
-    if os.path.exists(TFIDF_FIGURES) == False:
-        os.makedirs(TFIDF_FIGURES)
-    
-    X_train, y_train, X_valid, y_valid, X_test, y_test = extract_tfidf(train_data, valid_data, test_data)
-   
-   
-    model, metrics = Models.fit_logistic_regression(X_train, y_train, X_valid, y_valid, X_test, y_test)
-    metrics_data.append(["Logistic Regression", "TF-IDF"] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Logistic Regression", TFIDF_FIGURES+"logistic_regression")
-    
-    model, metrics = Models.fit_decision_tree(X_train, y_train, X_valid, y_valid, X_test, y_test)
-    metrics_data.append(["Decision Tree", "TF-IDF"] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Decision Tree", TFIDF_FIGURES+"decision_tree")
-    
-    model, metrics = Models.fit_random_forest(X_train, y_train, X_valid, y_valid, X_test, y_test)
-    metrics_data.append(["Random Forest", "TF-IDF"] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Random Forest", TFIDF_FIGURES+"random_forest")
-    
-    model, metrics = Models.fit_svm(X_train, y_train, X_valid, y_valid, X_test, y_test)
-    metrics_data.append(["SVM", "TF-IDF"] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "SVM", TFIDF_FIGURES+"svm")
-    
-    model, metrics = Models.fit_knn(X_train, y_train, X_valid, y_valid, X_test, y_test)
-    metrics_data.append(["KNN", "TF-IDF"] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "KNN", TFIDF_FIGURES+"knn")
-    
-    model, metrics = Models.fit_gaussian_nb(X_train, y_train, X_valid, y_valid, X_test, y_test)
-    metrics_data.append(["Gaussian NB", "TF-IDF"] + metrics)
-    create_confusion_matrix(model, X_train.toarray(), y_train, X_valid.toarray(), y_valid, X_test.toarray(), y_test, "Gaussian NB", TFIDF_FIGURES+"gaussian_nb")
-    
-    model, metrics = Models.fit_adaboost(X_train, y_train, X_valid, y_valid, X_test, y_test)
-    metrics_data.append(["AdaBoost", "TF-IDF"] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "AdaBoost", TFIDF_FIGURES+"adaboost")
-    
-    model, metrics = Models.fit_extra_trees(X_train, y_train, X_valid, y_valid, X_test, y_test)
-    metrics_data.append(["Extra Trees", "TF-IDF"] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Extra Trees", TFIDF_FIGURES+"extra_trees")
-    
-    model, metrics = Models.fit_xgboost(X_train, y_train, X_valid, y_valid, X_test, y_test, class_mapping)
-    metrics_data.append(["XGBoost", "TF-IDF"] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "XGBoost", TFIDF_FIGURES+"xgboost", class_mapping=class_mapping)
-    
-    
-    print("\n\nLog: TF-IDF Extraction Complete\n\n")
-    
+    do_fasttext(train_data, valid_data, test_data, metrics_data, embedding_name="crawl-300d-2M", agg='mean')
     
     
     for row in metrics_data:
         metrics_df.loc[len(metrics_df)] = row
     
-    metrics_df.to_csv("../generated/liar_data_metrics_multi_class.csv", index=False)
-    
+    metrics_df.to_csv("../generated/liar_data_metrics_multi_class_fasttext_embedding.csv", index=False)
 
 
 

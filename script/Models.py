@@ -135,15 +135,18 @@ def get_metrics(model,X_train, y_train, X_valid = None, y_valid = None, X_test=N
 
 def fit_logistic_regression(X_train, y_train, X_valid=None, y_valid=None, X_test=None, y_test=None):
     print("Log: Fitting Logistic Regression Model")
+    y_num_train = [class_mapping[label] for label in y_train]
+    y_num_valid = [class_mapping[label] for label in y_valid]
+    y_num_test = [class_mapping[label] for label in y_test]
     train_time = time.time()
     model = fit_logistic_regression_classifier(
-        X_train, y_train, 
+        X_train, y_num_train, 
         penalty="l2", 
         multi_class='multinomial', #HYPERPARAMETER 
         max_iter=4000, 
         solver='lbfgs')
     print("Log: Training Time: {:.3f} seconds".format(time.time()-train_time))
-    all_metrics = get_metrics(model, X_train, y_train, X_valid, y_valid, X_test, y_test)
+    all_metrics = get_metrics(model, X_train, y_num_train, X_valid, y_num_valid, X_test, y_num_test)
     train_accuracy, valid_accuracy, test_accuracy = all_metrics[:3]
     print("Log: Train Accuracy: ", train_accuracy)
     if X_valid is not None and y_valid is not None:
@@ -155,16 +158,19 @@ def fit_logistic_regression(X_train, y_train, X_valid=None, y_valid=None, X_test
 
 def fit_decision_tree(X_train, y_train, X_valid=None, y_valid=None, X_test=None, y_test=None):
     print("Log: Fitting Decision Tree Model")
+    y_num_train = [class_mapping[label] for label in y_train]
+    y_num_valid = [class_mapping[label] for label in y_valid]
+    y_num_test = [class_mapping[label] for label in y_test]
     train_time = time.time()
     model = fit_decision_tree_classifier(
-        X_train, y_train, 
+        X_train, y_num_train, 
         criterion="gini", 
         max_depth=100,  # HYPERPARAMETER
         min_samples_split=2, 
         min_samples_leaf=1)
-    
+
     print("Log: Training Time: {:.3f} seconds".format(time.time()-train_time))
-    all_metrics = get_metrics(model, X_train, y_train, X_valid, y_valid, X_test, y_test)
+    all_metrics = get_metrics(model, X_train, y_num_train, X_valid, y_num_valid, X_test, y_num_test)
     train_accuracy, valid_accuracy, test_accuracy = all_metrics[:3]
     print("Log: Train Accuracy: ", train_accuracy)
     if X_valid is not None and y_valid is not None:
@@ -175,9 +181,12 @@ def fit_decision_tree(X_train, y_train, X_valid=None, y_valid=None, X_test=None,
 
 def fit_random_forest(X_train, y_train, X_valid=None, y_valid=None, X_test=None, y_test=None):
     print("Log: Fitting Random Forest Model")
+    y_num_train = [class_mapping[label] for label in y_train]
+    y_num_valid = [class_mapping[label] for label in y_valid]
+    y_num_test = [class_mapping[label] for label in y_test]
     train_time = time.time()
     model = fit_random_forest_classifier(
-        X_train, y_train, 
+        X_train, y_num_train, 
         n_estimators=100, 
         criterion="gini", # HYPERPARAMETER
         max_depth=100, 
@@ -185,7 +194,7 @@ def fit_random_forest(X_train, y_train, X_valid=None, y_valid=None, X_test=None,
         min_samples_leaf=1)
     
     print("Log: Training Time: {:.3f} seconds".format(time.time()-train_time))
-    all_metrics = get_metrics(model, X_train, y_train, X_valid, y_valid, X_test, y_test)
+    all_metrics = get_metrics(model, X_train, y_num_train, X_valid, y_num_valid, X_test, y_num_test)
     train_accuracy, valid_accuracy, test_accuracy = all_metrics[:3]
     print("Log: Train Accuracy: ", train_accuracy)
     if X_valid is not None and y_valid is not None:
@@ -196,9 +205,12 @@ def fit_random_forest(X_train, y_train, X_valid=None, y_valid=None, X_test=None,
 
 def fit_svm(X_train, y_train, X_valid=None, y_valid=None, X_test=None, y_test=None):
     print("Log: Fitting SVM Model")
+    y_num_train = [class_mapping[label] for label in y_train]
+    y_num_valid = [class_mapping[label] for label in y_valid]
+    y_num_test = [class_mapping[label] for label in y_test] 
     train_time = time.time()
     model = fit_svm_classifier(
-        X_train, y_train,
+        X_train, y_num_train,
         probability=True,
         C=1.0, 
         kernel='rbf', 
@@ -207,7 +219,7 @@ def fit_svm(X_train, y_train, X_valid=None, y_valid=None, X_test=None, y_test=No
         coef0=0.0)
     
     print("Log: Training Time: {:.3f} seconds".format(time.time()-train_time))
-    all_metrics = get_metrics(model, X_train, y_train, X_valid, y_valid, X_test, y_test)
+    all_metrics = get_metrics(model, X_train, y_num_train, X_valid, y_num_valid, X_test, y_num_test)
     train_accuracy, valid_accuracy, test_accuracy = all_metrics[:3]
     print("Log: Train Accuracy: ", train_accuracy)
     if X_valid is not None and y_valid is not None:
@@ -218,9 +230,12 @@ def fit_svm(X_train, y_train, X_valid=None, y_valid=None, X_test=None, y_test=No
 
 def fit_knn(X_train, y_train, X_valid=None, y_valid=None, X_test=None, y_test=None):
     print("Log: Fitting KNN Model")
+    y_num_train = [class_mapping[label] for label in y_train]
+    y_num_valid = [class_mapping[label] for label in y_valid]
+    y_num_test = [class_mapping[label] for label in y_test] 
     train_time = time.time()
     model = fit_knn_classifier(
-        X_train, y_train, 
+        X_train, y_num_train, 
         n_neighbors=25, 
         weights='uniform', 
         algorithm='auto',  # HYPERPARAMETER  
@@ -228,7 +243,7 @@ def fit_knn(X_train, y_train, X_valid=None, y_valid=None, X_test=None, y_test=No
         p=2, 
         metric='minkowski')
     print("Log: Training Time: {:.3f} seconds".format(time.time()-train_time))
-    all_metrics = get_metrics(model, X_train, y_train, X_valid, y_valid, X_test, y_test)
+    all_metrics = get_metrics(model, X_train, y_num_train, X_valid, y_num_valid, X_test, y_num_test)
     train_accuracy, valid_accuracy, test_accuracy = all_metrics[:3]
     
     print("Log: Train Accuracy: ", train_accuracy)
@@ -240,11 +255,14 @@ def fit_knn(X_train, y_train, X_valid=None, y_valid=None, X_test=None, y_test=No
 
 def fit_gaussian_nb(X_train, y_train, X_valid=None, y_valid=None, X_test=None, y_test=None):
     print("Log: Fitting Gaussian NB Model")
+    y_num_train = [class_mapping[label] for label in y_train]
+    y_num_valid = [class_mapping[label] for label in y_valid]
+    y_num_test = [class_mapping[label] for label in y_test] 
     train_time = time.time()
-    model = fit_gaussian_nb_classifier(X_train.toarray(), y_train)
+    model = fit_gaussian_nb_classifier(X_train.toarray(), y_num_train)
     print("Log: Training Time: {:.3f} seconds".format(time.time()-train_time))
     # This is a sparse matrix, so we need to convert it to dense matrix for GaussianNB
-    all_metrics = get_metrics(model, X_train.toarray(), y_train, X_valid.toarray(), y_valid, X_test.toarray(), y_test)
+    all_metrics = get_metrics(model, X_train.toarray(), y_num_train, X_valid.toarray(), y_num_valid, X_test.toarray(), y_num_test)
     train_accuracy, valid_accuracy, test_accuracy = all_metrics[:3]
     print("Log: Train Accuracy: ", train_accuracy)
     if X_valid is not None and y_valid is not None:
@@ -255,14 +273,17 @@ def fit_gaussian_nb(X_train, y_train, X_valid=None, y_valid=None, X_test=None, y
 
 def fit_adaboost(X_train, y_train, X_valid=None, y_valid=None, X_test=None, y_test=None):
     print("Log: Fitting AdaBoost Model")
+    y_num_train = [class_mapping[label] for label in y_train]
+    y_num_valid = [class_mapping[label] for label in y_valid]
+    y_num_test = [class_mapping[label] for label in y_test] 
     train_time = time.time()
     model = fit_adaboost_classifier(
-        X_train, y_train, 
+        X_train, y_num_train, 
         n_estimators=300, 
         learning_rate=1.0,
         algorithm='SAMME') # HYPERPARAMETER
     print("Log: Training Time: {:.3f} seconds".format(time.time()-train_time))
-    all_metrics = get_metrics(model, X_train, y_train, X_valid, y_valid, X_test, y_test)
+    all_metrics = get_metrics(model, X_train, y_num_train, X_valid, y_num_valid, X_test, y_num_test)
     train_accuracy, valid_accuracy, test_accuracy = all_metrics[:3]
     print("Log: Train Accuracy: ", train_accuracy)
     if X_valid is not None and y_valid is not None:
@@ -273,9 +294,13 @@ def fit_adaboost(X_train, y_train, X_valid=None, y_valid=None, X_test=None, y_te
 
 def fit_extra_trees(X_train, y_train, X_valid=None, y_valid=None, X_test=None, y_test=None):
     print("Log: Fitting Extra Trees Model")
+    y_num_train = [class_mapping[label] for label in y_train]
+    y_num_valid = [class_mapping[label] for label in y_valid]
+    y_num_test = [class_mapping[label] for label in y_test] 
+    
     train_time = time.time()
     model = fit_extra_trees_classifier(
-        X_train, y_train, 
+        X_train, y_num_train, 
         n_estimators=300, 
         criterion='gini', 
         max_depth=23, 
@@ -293,7 +318,7 @@ def fit_extra_trees(X_train, y_train, X_valid=None, y_valid=None, X_test=None, y
         ccp_alpha=0.0, 
         max_samples=None)
     print("Log: Training Time: {:.3f} seconds".format(time.time()-train_time))
-    all_metrics = get_metrics(model, X_train, y_train, X_valid, y_valid, X_test, y_test)
+    all_metrics = get_metrics(model, X_train, y_num_train, X_valid, y_num_valid, X_test, y_num_test)
     train_accuracy, valid_accuracy, test_accuracy = all_metrics[:3]
     print("Log: Train Accuracy: ", train_accuracy)
     if X_valid is not None and y_valid is not None:
