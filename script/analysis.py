@@ -6,8 +6,10 @@ from LiarDriver import *
 from tqdm import tqdm
 import Models
 import gc
+from imblearn.over_sampling import SMOTE
 
-def do_cbow(train_data, valid_data, test_data, metrics_data):
+
+def do_cbow(train_data, valid_data, test_data, metrics_data, smote = False):
     # 1. Bag of Words
     print("\n\nLog: Extracting Bag of Words")
     CBOW_FIGURES = "../generated/figures/liar_data/cbow/"
@@ -15,45 +17,57 @@ def do_cbow(train_data, valid_data, test_data, metrics_data):
         os.makedirs(CBOW_FIGURES)
         
     X_train, y_train, X_valid, y_valid, X_test, y_test = extract_cbow(train_data, valid_data, test_data)
+    
+    if smote:
+        print("Applying SMOTE")
+        print("BEFORE:")
+        print("Train Data Shape: ", X_train.shape)
+        print("Train Label Shape: ", y_train.shape)
+        smote = SMOTE(sampling_strategy='minority', random_state=42)
+        X_train, y_train = smote.fit_resample(X_train, y_train)
+        print("SMOTE Applied")
+        print("AFTER:")
+        print("Train Data Shape: ", X_train.shape)
+        print("Train Label Shape: ", y_train.shape)
 
-    model, metrics = Models.fit_logistic_regression(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    model, metrics = Models.fit_logistic_regression(X_train, y_train, X_valid, y_valid, X_test, y_test, class_mapping)
     metrics_data.append(["Logistic Regression", "Bag of Words"] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Logistic Regression", CBOW_FIGURES+"logistic_regression")
+    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Logistic Regression", CBOW_FIGURES+"logistic_regression", class_mapping=class_mapping)
     
-    model, metrics = Models.fit_decision_tree(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    model, metrics = Models.fit_decision_tree(X_train, y_train, X_valid, y_valid, X_test, y_test, class_mapping)
     metrics_data.append(["Decision Tree", "Bag of Words"] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Decision Tree", CBOW_FIGURES+"decision_tree")
+    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Decision Tree", CBOW_FIGURES+"decision_tree", class_mapping=class_mapping)
     
-    model, metrics = Models.fit_random_forest(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    model, metrics = Models.fit_random_forest(X_train, y_train, X_valid, y_valid, X_test, y_test, class_mapping)
     metrics_data.append(["Random Forest", "Bag of Words"] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Random Forest", CBOW_FIGURES+"random_forest")
+    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Random Forest", CBOW_FIGURES+"random_forest", class_mapping=class_mapping)
     
-    model, metrics = Models.fit_svm(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    model, metrics = Models.fit_svm(X_train, y_train, X_valid, y_valid, X_test, y_test, class_mapping)
     metrics_data.append(["SVM", "Bag of Words"] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "SVM", CBOW_FIGURES+"svm")
+    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "SVM", CBOW_FIGURES+"svm", class_mapping=class_mapping)
     
-    model, metrics = Models.fit_knn(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    model, metrics = Models.fit_knn(X_train, y_train, X_valid, y_valid, X_test, y_test, class_mapping)
     metrics_data.append(["KNN", "Bag of Words"] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "KNN", CBOW_FIGURES+"knn")
+    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "KNN", CBOW_FIGURES+"knn", class_mapping=class_mapping)
     
-    model, metrics = Models.fit_gaussian_nb(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    model, metrics = Models.fit_gaussian_nb(X_train, y_train, X_valid, y_valid, X_test, y_test, class_mapping)
     metrics_data.append(["Gaussian NB", "Bag of Words"] + metrics)
-    create_confusion_matrix(model, X_train.toarray(), y_train, X_valid.toarray(), y_valid, X_test.toarray(), y_test, "Gaussian NB", CBOW_FIGURES+"gaussian_nb")
+    create_confusion_matrix(model, X_train.toarray(), y_train, X_valid.toarray(), y_valid, X_test.toarray(), y_test, "Gaussian NB", CBOW_FIGURES+"gaussian_nb", class_mapping=class_mapping)
     
-    model, metrics = Models.fit_adaboost(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    model, metrics = Models.fit_adaboost(X_train, y_train, X_valid, y_valid, X_test, y_test, class_mapping)
     metrics_data.append(["AdaBoost", "Bag of Words"] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "AdaBoost", CBOW_FIGURES+"adaboost")
+    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "AdaBoost", CBOW_FIGURES+"adaboost", class_mapping=class_mapping)
     
-    model, metrics = Models.fit_extra_trees(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    model, metrics = Models.fit_extra_trees(X_train, y_train, X_valid, y_valid, X_test, y_test, class_mapping)
     metrics_data.append(["Extra Trees", "Bag of Words"] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Extra Trees", CBOW_FIGURES+"extra_trees")
+    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Extra Trees", CBOW_FIGURES+"extra_trees", class_mapping=class_mapping)
     
     model, metrics = Models.fit_xgboost(X_train, y_train, X_valid, y_valid, X_test, y_test, class_mapping=class_mapping)
     metrics_data.append(["XGBoost", "Bag of Words"] + metrics)
     create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "XGBoost", CBOW_FIGURES+"xgboost", class_mapping=class_mapping)
     print("\n\nLog: Bag of Words Extraction Complete\n\n")
 
-def do_tfidf(train_data, valid_data, test_data, metrics_data):
+def do_tfidf(train_data, valid_data, test_data, metrics_data, smote = False):
 
     # 2. TF-IDF
     print("\n\nLog: Extracting TF-IDF")
@@ -62,38 +76,42 @@ def do_tfidf(train_data, valid_data, test_data, metrics_data):
         os.makedirs(TFIDF_FIGURES)
  
     X_train, y_train, X_valid, y_valid, X_test, y_test = extract_tfidf(train_data, valid_data, test_data)
+    
+    if smote:
+        smote = SMOTE(sampling_strategy='minority', random_state=42)
+        X_train, y_train = smote.fit_resample(X_train, y_train)
    
-    model, metrics = Models.fit_logistic_regression(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    model, metrics = Models.fit_logistic_regression(X_train, y_train, X_valid, y_valid, X_test, y_test, class_mapping)
     metrics_data.append(["Logistic Regression", "TF-IDF"] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Logistic Regression", TFIDF_FIGURES+"logistic_regression")
+    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Logistic Regression", TFIDF_FIGURES+"logistic_regression", class_mapping=class_mapping)
     
-    model, metrics = Models.fit_decision_tree(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    model, metrics = Models.fit_decision_tree(X_train, y_train, X_valid, y_valid, X_test, y_test, class_mapping)
     metrics_data.append(["Decision Tree", "TF-IDF"] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Decision Tree", TFIDF_FIGURES+"decision_tree")
+    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Decision Tree", TFIDF_FIGURES+"decision_tree", class_mapping=class_mapping)
     
-    model, metrics = Models.fit_random_forest(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    model, metrics = Models.fit_random_forest(X_train, y_train, X_valid, y_valid, X_test, y_test, class_mapping)
     metrics_data.append(["Random Forest", "TF-IDF"] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Random Forest", TFIDF_FIGURES+"random_forest")
+    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Random Forest", TFIDF_FIGURES+"random_forest", class_mapping=class_mapping)
     
-    model, metrics = Models.fit_svm(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    model, metrics = Models.fit_svm(X_train, y_train, X_valid, y_valid, X_test, y_test, class_mapping)
     metrics_data.append(["SVM", "TF-IDF"] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "SVM", TFIDF_FIGURES+"svm")
+    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "SVM", TFIDF_FIGURES+"svm", class_mapping=class_mapping)
     
-    model, metrics = Models.fit_knn(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    model, metrics = Models.fit_knn(X_train, y_train, X_valid, y_valid, X_test, y_test, class_mapping)
     metrics_data.append(["KNN", "TF-IDF"] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "KNN", TFIDF_FIGURES+"knn")
+    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "KNN", TFIDF_FIGURES+"knn", class_mapping=class_mapping)
     
-    model, metrics = Models.fit_gaussian_nb(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    model, metrics = Models.fit_gaussian_nb(X_train, y_train, X_valid, y_valid, X_test, y_test, class_mapping)
     metrics_data.append(["Gaussian NB", "TF-IDF"] + metrics)
-    create_confusion_matrix(model, X_train.toarray(), y_train, X_valid.toarray(), y_valid, X_test.toarray(), y_test, "Gaussian NB", TFIDF_FIGURES+"gaussian_nb")
+    create_confusion_matrix(model, X_train.toarray(), y_train, X_valid.toarray(), y_valid, X_test.toarray(), y_test, "Gaussian NB", TFIDF_FIGURES+"gaussian_nb", class_mapping=class_mapping)
     
-    model, metrics = Models.fit_adaboost(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    model, metrics = Models.fit_adaboost(X_train, y_train, X_valid, y_valid, X_test, y_test, class_mapping)
     metrics_data.append(["AdaBoost", "TF-IDF"] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "AdaBoost", TFIDF_FIGURES+"adaboost")
+    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "AdaBoost", TFIDF_FIGURES+"adaboost", class_mapping=class_mapping)
     
-    model, metrics = Models.fit_extra_trees(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    model, metrics = Models.fit_extra_trees(X_train, y_train, X_valid, y_valid, X_test, y_test, class_mapping)
     metrics_data.append(["Extra Trees", "TF-IDF"] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Extra Trees", TFIDF_FIGURES+"extra_trees")
+    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Extra Trees", TFIDF_FIGURES+"extra_trees", class_mapping=class_mapping)
     
     model, metrics = Models.fit_xgboost(X_train, y_train, X_valid, y_valid, X_test, y_test, class_mapping)
     metrics_data.append(["XGBoost", "TF-IDF"] + metrics)
@@ -186,7 +204,7 @@ def extract_embeddings(train_data, valid_data, test_data, embeddings_index):
     return X_train, y_train, X_valid, y_valid, X_test, y_test
 
 GLOVE_PATH = "../embeddings/glove/{}.txt"
-def do_glove_6b(train_data, valid_data, test_data, metrics_data, embedding_name = 'glove.6B.100d', agg = 'mean'):
+def do_glove_6b(train_data, valid_data, test_data, metrics_data, embedding_name = 'glove.6B.100d', agg = 'mean', smote = False):
 
     # 2. GLOVE.6B.100d
     print("\n\nLog: Extracting {}".format(embedding_name))
@@ -200,49 +218,52 @@ def do_glove_6b(train_data, valid_data, test_data, metrics_data, embedding_name 
         embeddings_index = load_glove_embeddings(GLOVE_PATH.format(embedding_name))
     X_train, y_train, X_valid, y_valid, X_test, y_test = extract_embeddings(train_data, valid_data, test_data, embeddings_index)
  
-    
-    model, metrics = Models.fit_logistic_regression(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    if smote:
+        smote = SMOTE(sampling_strategy='minority', random_state=42)
+        X_train, y_train = smote.fit_resample(X_train, y_train)
+
+    model, metrics = Models.fit_logistic_regression(X_train, y_train, X_valid, y_valid, X_test, y_test, class_mapping)
     metrics_data.append(["Logistic Regression", embedding_name+"_"+agg] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Logistic Regression", FIGURES+"logistic_regression")
+    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Logistic Regression", FIGURES+"logistic_regression", class_mapping=class_mapping)
     gc.collect()
     
-    model, metrics = Models.fit_decision_tree(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    model, metrics = Models.fit_decision_tree(X_train, y_train, X_valid, y_valid, X_test, y_test, class_mapping)
     metrics_data.append(["Decision Tree", embedding_name+"_"+agg] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Decision Tree", FIGURES+"decision_tree")
+    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Decision Tree", FIGURES+"decision_tree", class_mapping=class_mapping)
     gc.collect()
     
-    model, metrics = Models.fit_random_forest(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    model, metrics = Models.fit_random_forest(X_train, y_train, X_valid, y_valid, X_test, y_test, class_mapping)
     metrics_data.append(["Random Forest", embedding_name+"_"+agg] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Random Forest", FIGURES+"random_forest")
+    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Random Forest", FIGURES+"random_forest", class_mapping=class_mapping)
     gc.collect()
     
-    model, metrics = Models.fit_svm(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    model, metrics = Models.fit_svm(X_train, y_train, X_valid, y_valid, X_test, y_test, class_mapping)
     metrics_data.append(["SVM", embedding_name+"_"+agg] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "SVM", FIGURES+"svm")
+    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "SVM", FIGURES+"svm", class_mapping=class_mapping)
     gc.collect()
     
     
-    model, metrics = Models.fit_knn(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    model, metrics = Models.fit_knn(X_train, y_train, X_valid, y_valid, X_test, y_test, class_mapping)
     metrics_data.append(["KNN", embedding_name+"_"+agg] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "KNN", FIGURES+"knn")
+    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "KNN", FIGURES+"knn", class_mapping=class_mapping)
     gc.collect()
     
     
-    model, metrics = Models.fit_gaussian_nb(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    model, metrics = Models.fit_gaussian_nb(X_train, y_train, X_valid, y_valid, X_test, y_test, class_mapping)
     metrics_data.append(["Gaussian NB", embedding_name+"_"+agg] + metrics)
-    create_confusion_matrix(model, X_train.toarray(), y_train, X_valid.toarray(), y_valid, X_test.toarray(), y_test, "Gaussian NB", FIGURES+"gaussian_nb")
+    create_confusion_matrix(model, X_train.toarray(), y_train, X_valid.toarray(), y_valid, X_test.toarray(), y_test, "Gaussian NB", FIGURES+"gaussian_nb", class_mapping=class_mapping)
     gc.collect()
     
     
-    model, metrics = Models.fit_adaboost(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    model, metrics = Models.fit_adaboost(X_train, y_train, X_valid, y_valid, X_test, y_test, class_mapping)
     metrics_data.append(["AdaBoost", embedding_name+"_"+agg] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "AdaBoost", FIGURES+"adaboost")
+    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "AdaBoost", FIGURES+"adaboost", class_mapping=class_mapping)
     gc.collect()
     
     
-    model, metrics = Models.fit_extra_trees(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    model, metrics = Models.fit_extra_trees(X_train, y_train, X_valid, y_valid, X_test, y_test, class_mapping)
     metrics_data.append(["Extra Trees", embedding_name+"_"+agg] + metrics)
-    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Extra Trees", FIGURES+"extra_trees")
+    create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Extra Trees", FIGURES+"extra_trees", class_mapping=class_mapping)
     gc.collect()
     
     model, metrics = Models.fit_xgboost(X_train, y_train, X_valid, y_valid, X_test, y_test, class_mapping)
@@ -269,43 +290,43 @@ def do_fasttext(train_data, valid_data, test_data, metrics_data, embedding_name 
     X_train, y_train, X_valid, y_valid, X_test, y_test = extract_embeddings(train_data, valid_data, test_data, embeddings_index)
  
     
-    model, metrics = Models.fit_logistic_regression(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    model, metrics = Models.fit_logistic_regression(X_train, y_train, X_valid, y_valid, X_test, y_test, class_mapping)
     metrics_data.append(["Logistic Regression", embedding_name+"_"+agg] + metrics)
     create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Logistic Regression", FIGURES+"logistic_regression")
     gc.collect()
     
-    model, metrics = Models.fit_decision_tree(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    model, metrics = Models.fit_decision_tree(X_train, y_train, X_valid, y_valid, X_test, y_test, class_mapping)
     metrics_data.append(["Decision Tree", embedding_name+"_"+agg] + metrics)
     create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Decision Tree", FIGURES+"decision_tree")
     gc.collect()
     
-    model, metrics = Models.fit_random_forest(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    model, metrics = Models.fit_random_forest(X_train, y_train, X_valid, y_valid, X_test, y_test, class_mapping)
     metrics_data.append(["Random Forest", embedding_name+"_"+agg] + metrics)
     create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Random Forest", FIGURES+"random_forest")
     gc.collect()
     
-    model, metrics = Models.fit_svm(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    model, metrics = Models.fit_svm(X_train, y_train, X_valid, y_valid, X_test, y_test, class_mapping)
     metrics_data.append(["SVM", embedding_name+"_"+agg] + metrics)
     create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "SVM", FIGURES+"svm")
     gc.collect()
     
     
-    model, metrics = Models.fit_knn(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    model, metrics = Models.fit_knn(X_train, y_train, X_valid, y_valid, X_test, y_test, class_mapping)
     metrics_data.append(["KNN", embedding_name+"_"+agg] + metrics)
     create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "KNN", FIGURES+"knn")
     gc.collect()
     
-    model, metrics = Models.fit_gaussian_nb(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    model, metrics = Models.fit_gaussian_nb(X_train, y_train, X_valid, y_valid, X_test, y_test, class_mapping)
     metrics_data.append(["Gaussian NB", embedding_name+"_"+agg] + metrics)
     create_confusion_matrix(model, X_train.toarray(), y_train, X_valid.toarray(), y_valid, X_test.toarray(), y_test, "Gaussian NB", FIGURES+"gaussian_nb")
     gc.collect()
     
-    model, metrics = Models.fit_adaboost(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    model, metrics = Models.fit_adaboost(X_train, y_train, X_valid, y_valid, X_test, y_test, class_mapping)
     metrics_data.append(["AdaBoost", embedding_name+"_"+agg] + metrics)
     create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "AdaBoost", FIGURES+"adaboost")
     gc.collect()
     
-    model, metrics = Models.fit_extra_trees(X_train, y_train, X_valid, y_valid, X_test, y_test)
+    model, metrics = Models.fit_extra_trees(X_train, y_train, X_valid, y_valid, X_test, y_test, class_mapping)
     metrics_data.append(["Extra Trees", embedding_name+"_"+agg] + metrics)
     create_confusion_matrix(model, X_train, y_train, X_valid, y_valid, X_test, y_test, "Extra Trees", FIGURES+"extra_trees")
     gc.collect()

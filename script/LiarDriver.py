@@ -38,6 +38,14 @@ class_mapping = {
     'mostly-true': 4,
     'true': 5
 }
+# class_mapping = {
+#     'pants-fire': 0,
+#     'false': 0,
+#     'barely-true': 0,
+#     'half-true': 1,
+#     'mostly-true': 1,
+#     'true': 1
+# }
 
 
 Visualization.FIG_DIR = "../generated/figures/liar_data/"
@@ -176,28 +184,28 @@ def liar_multi_class():
     )
     
     metrics_data = []
-    # do_cbow(train_data, valid_data, test_data, metrics_data)
-    # do_tfidf(train_data, valid_data, test_data, metrics_data)
-    # do_glove_6b(train_data, valid_data, test_data, metrics_data, embedding_name="glove.6B.300d", agg='mean')
-    # do_glove_6b(train_data, valid_data, test_data, metrics_data, embedding_name="glove.6B.300d", agg='max')
-    # do_glove_6b(train_data, valid_data, test_data, metrics_data, embedding_name="glove.6B.300d", agg='sum')
+    do_cbow(train_data, valid_data, test_data, metrics_data, smote=True)
+    do_tfidf(train_data, valid_data, test_data, metrics_data, smote=True)
+    do_glove_6b(train_data, valid_data, test_data, metrics_data, embedding_name="glove.6B.300d", agg='mean', smote=True)
+    do_glove_6b(train_data, valid_data, test_data, metrics_data, embedding_name="glove.6B.300d", agg='max', smote=True)
+    do_glove_6b(train_data, valid_data, test_data, metrics_data, embedding_name="glove.6B.300d", agg='sum', smote=True)
     
-    # do_glove_6b(train_data, valid_data, test_data, metrics_data, embedding_name="glove.twitter.27B.200d", agg='mean')
-    # do_glove_6b(train_data, valid_data, test_data, metrics_data, embedding_name="glove.twitter.27B.200d", agg='max')
-    # do_glove_6b(train_data, valid_data, test_data, metrics_data, embedding_name="glove.twitter.27B.200d", agg='sum')
+    do_glove_6b(train_data, valid_data, test_data, metrics_data, embedding_name="glove.twitter.27B.200d", agg='mean', smote=True)
+    do_glove_6b(train_data, valid_data, test_data, metrics_data, embedding_name="glove.twitter.27B.200d", agg='max', smote=True)
+    do_glove_6b(train_data, valid_data, test_data, metrics_data, embedding_name="glove.twitter.27B.200d", agg='sum', smote=True)
     
-    # do_glove_6b(train_data, valid_data, test_data, metrics_data, embedding_name="glove.840B.300d", agg='mean')
-    # do_glove_6b(train_data, valid_data, test_data, metrics_data, embedding_name="glove.840B.300d", agg='max')
-    # do_glove_6b(train_data, valid_data, test_data, metrics_data, embedding_name="glove.840B.300d", agg='sum')
+    do_glove_6b(train_data, valid_data, test_data, metrics_data, embedding_name="glove.840B.300d", agg='mean', smote=True)
+    do_glove_6b(train_data, valid_data, test_data, metrics_data, embedding_name="glove.840B.300d", agg='max', smote=True)
+    do_glove_6b(train_data, valid_data, test_data, metrics_data, embedding_name="glove.840B.300d", agg='sum', smote=True)
     
     
-    do_fasttext(train_data, valid_data, test_data, metrics_data, embedding_name="crawl-300d-2M", agg='mean')
+    # do_fasttext(train_data, valid_data, test_data, metrics_data, embedding_name="crawl-300d-2M", agg='mean')
     
     
     for row in metrics_data:
         metrics_df.loc[len(metrics_df)] = row
     
-    metrics_df.to_csv("../generated/liar_data_metrics_multi_class_fasttext_embedding.csv", index=False)
+    metrics_df.to_csv("../generated/liar_data_metrics_smote_6_class.csv", index=False)
 
 
 

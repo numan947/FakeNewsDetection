@@ -62,9 +62,11 @@ def fit_knn_classifier(X_train, y_train, **options): ## TODO: Add other hyperpar
     model.fit(X_train, y_train)
     return model
 
-def get_metrics(model,X_train, y_train, X_valid = None, y_valid = None, X_test=None, y_test=None):
+def get_metrics(model,X_train, y_train, X_valid = None, y_valid = None, X_test=None, y_test=None, class_mapping=None):
     y_train_pred = model.predict(X_train)
     y_train_pred_proba = model.predict_proba(X_train)
+    # print(y_train_pred_proba.shape)
+    # print(y_train_pred)
     y_valid_pred = None
     y_test_pred = None
     if X_valid is not None and y_valid is not None:
@@ -79,6 +81,7 @@ def get_metrics(model,X_train, y_train, X_valid = None, y_valid = None, X_test=N
     train_recall = recall_score(y_train, y_train_pred, average='weighted')
     train_f1 = f1_score(y_train, y_train_pred, average='weighted')
     train_auc = roc_auc_score(y_train, y_train_pred_proba, average='weighted', multi_class='ovr')
+    # train_auc = roc_auc_score(y_train, y_train_pred)
     
     valid_accuracy = None
     valid_precision = None
@@ -91,6 +94,7 @@ def get_metrics(model,X_train, y_train, X_valid = None, y_valid = None, X_test=N
         valid_recall = recall_score(y_valid, y_valid_pred, average='weighted')
         valid_f1 = f1_score(y_valid, y_valid_pred, average='weighted')
         valid_auc = roc_auc_score(y_valid, y_valid_pred_proba, average='weighted', multi_class='ovr')
+        # valid_auc = roc_auc_score(y_valid, y_valid_pred)
     
     test_accuracy = None
     test_precision = None
@@ -103,6 +107,7 @@ def get_metrics(model,X_train, y_train, X_valid = None, y_valid = None, X_test=N
         test_recall = recall_score(y_test, y_test_pred, average='weighted')
         test_f1 = f1_score(y_test, y_test_pred, average='weighted')
         test_auc = roc_auc_score(y_test, y_test_pred_proba, average='weighted', multi_class='ovr')
+        # test_auc = roc_auc_score(y_test, y_test_pred)
     
     # [
         # train_accuracy, valid_accuracy, test_accuracy, 
@@ -133,7 +138,7 @@ def get_metrics(model,X_train, y_train, X_valid = None, y_valid = None, X_test=N
 
 ######### MODEL FITTING ##########
 
-def fit_logistic_regression(X_train, y_train, X_valid=None, y_valid=None, X_test=None, y_test=None):
+def fit_logistic_regression(X_train, y_train, X_valid=None, y_valid=None, X_test=None, y_test=None, class_mapping=None):
     print("Log: Fitting Logistic Regression Model")
     y_num_train = [class_mapping[label] for label in y_train]
     y_num_valid = [class_mapping[label] for label in y_valid]
@@ -156,7 +161,7 @@ def fit_logistic_regression(X_train, y_train, X_valid=None, y_valid=None, X_test
     return model, all_metrics
     
 
-def fit_decision_tree(X_train, y_train, X_valid=None, y_valid=None, X_test=None, y_test=None):
+def fit_decision_tree(X_train, y_train, X_valid=None, y_valid=None, X_test=None, y_test=None, class_mapping=None):
     print("Log: Fitting Decision Tree Model")
     y_num_train = [class_mapping[label] for label in y_train]
     y_num_valid = [class_mapping[label] for label in y_valid]
@@ -179,7 +184,7 @@ def fit_decision_tree(X_train, y_train, X_valid=None, y_valid=None, X_test=None,
         print("Log: Test Accuracy: ", test_accuracy)
     return model, all_metrics
 
-def fit_random_forest(X_train, y_train, X_valid=None, y_valid=None, X_test=None, y_test=None):
+def fit_random_forest(X_train, y_train, X_valid=None, y_valid=None, X_test=None, y_test=None, class_mapping=None):
     print("Log: Fitting Random Forest Model")
     y_num_train = [class_mapping[label] for label in y_train]
     y_num_valid = [class_mapping[label] for label in y_valid]
@@ -203,7 +208,7 @@ def fit_random_forest(X_train, y_train, X_valid=None, y_valid=None, X_test=None,
         print("Log: Test Accuracy: ", test_accuracy)
     return model, all_metrics
 
-def fit_svm(X_train, y_train, X_valid=None, y_valid=None, X_test=None, y_test=None):
+def fit_svm(X_train, y_train, X_valid=None, y_valid=None, X_test=None, y_test=None, class_mapping=None):
     print("Log: Fitting SVM Model")
     y_num_train = [class_mapping[label] for label in y_train]
     y_num_valid = [class_mapping[label] for label in y_valid]
@@ -228,7 +233,7 @@ def fit_svm(X_train, y_train, X_valid=None, y_valid=None, X_test=None, y_test=No
         print("Log: Test Accuracy: ", test_accuracy)
     return model, all_metrics
 
-def fit_knn(X_train, y_train, X_valid=None, y_valid=None, X_test=None, y_test=None):
+def fit_knn(X_train, y_train, X_valid=None, y_valid=None, X_test=None, y_test=None, class_mapping=None):
     print("Log: Fitting KNN Model")
     y_num_train = [class_mapping[label] for label in y_train]
     y_num_valid = [class_mapping[label] for label in y_valid]
@@ -253,7 +258,7 @@ def fit_knn(X_train, y_train, X_valid=None, y_valid=None, X_test=None, y_test=No
         print("Log: Test Accuracy: ", test_accuracy)
     return model, all_metrics
 
-def fit_gaussian_nb(X_train, y_train, X_valid=None, y_valid=None, X_test=None, y_test=None):
+def fit_gaussian_nb(X_train, y_train, X_valid=None, y_valid=None, X_test=None, y_test=None, class_mapping=None):
     print("Log: Fitting Gaussian NB Model")
     y_num_train = [class_mapping[label] for label in y_train]
     y_num_valid = [class_mapping[label] for label in y_valid]
@@ -271,7 +276,7 @@ def fit_gaussian_nb(X_train, y_train, X_valid=None, y_valid=None, X_test=None, y
         print("Log: Test Accuracy: ", test_accuracy)
     return model, all_metrics
 
-def fit_adaboost(X_train, y_train, X_valid=None, y_valid=None, X_test=None, y_test=None):
+def fit_adaboost(X_train, y_train, X_valid=None, y_valid=None, X_test=None, y_test=None, class_mapping=None):
     print("Log: Fitting AdaBoost Model")
     y_num_train = [class_mapping[label] for label in y_train]
     y_num_valid = [class_mapping[label] for label in y_valid]
@@ -292,7 +297,7 @@ def fit_adaboost(X_train, y_train, X_valid=None, y_valid=None, X_test=None, y_te
         print("Log: Test Accuracy: ", test_accuracy)
     return model, all_metrics
 
-def fit_extra_trees(X_train, y_train, X_valid=None, y_valid=None, X_test=None, y_test=None):
+def fit_extra_trees(X_train, y_train, X_valid=None, y_valid=None, X_test=None, y_test=None, class_mapping=None):
     print("Log: Fitting Extra Trees Model")
     y_num_train = [class_mapping[label] for label in y_train]
     y_num_valid = [class_mapping[label] for label in y_valid]
