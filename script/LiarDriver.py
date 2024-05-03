@@ -186,6 +186,7 @@ def liar_multi_class():
     metrics_data = []
     do_cbow(train_data, valid_data, test_data, metrics_data, smote=True)
     do_tfidf(train_data, valid_data, test_data, metrics_data, smote=True)
+    
     do_glove_6b(train_data, valid_data, test_data, metrics_data, embedding_name="glove.6B.300d", agg='mean', smote=True)
     do_glove_6b(train_data, valid_data, test_data, metrics_data, embedding_name="glove.6B.300d", agg='max', smote=True)
     do_glove_6b(train_data, valid_data, test_data, metrics_data, embedding_name="glove.6B.300d", agg='sum', smote=True)
@@ -199,7 +200,6 @@ def liar_multi_class():
     do_glove_6b(train_data, valid_data, test_data, metrics_data, embedding_name="glove.840B.300d", agg='sum', smote=True)
     
     
-    # do_fasttext(train_data, valid_data, test_data, metrics_data, embedding_name="crawl-300d-2M", agg='mean')
     
     
     for row in metrics_data:

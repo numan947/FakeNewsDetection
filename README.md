@@ -1,4 +1,5 @@
 ## Folder Structure
+**TO RUN THE PROJECT PLEASE SEE: scripts/README.md**
 ```
 FakeNewDetection
 ├── data

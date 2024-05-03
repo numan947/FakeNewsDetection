@@ -1,1 +1,8 @@
-## TODO: ADD scripts here
+### Running the Project
+#### Step 1: 
+Download the Glove embeddings from the following link: https://nlp.stanford.edu/projects/glove/. Then extract them and place the files (all of these are in .txt format) in the "embeddings/glove" folder (glove.6B.zip, glove.840B.300d.zip, glove.twitter.27B.zip).
+
+#### Step 2: 
+Use the main entry point of the project, `LiarDriver.py`, to run the project using the following `python3 LiarDriver.py`. To change the configuration of the project, i.e. `smote=True/smote=False`, change the corresponding lines in the `LiarDriver.py` file in `liar_multi_class()` function. Also change line 208 in `LiarDriver.py` to change the file for saving the results.
+
+By default all generated files will be saved in the `generated/` folder.
